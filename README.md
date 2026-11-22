@@ -73,7 +73,7 @@ Reproduce the comparison: `./scripts/explain_before_after.sh`
 
 | | Plan | Execution time |
 |---|---|---|
-| Before | Seq Scan on hotel_bookings | ~17 ms |
+| Before | Seq Scan on hotel_bookings | ~24 ms |
 | After  | Index Only Scan, Heap Fetches: 0 | ~2 ms |
 
 (Measured on a laptop-class container; absolute numbers vary, the plan change is the point.)
