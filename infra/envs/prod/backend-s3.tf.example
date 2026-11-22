@@ -1,0 +1,11 @@
+# Production-style remote state. Rename to backend.tf (and delete the local backend.tf).
+# Create the bucket + lock table once, outside this config.
+terraform {
+  backend "s3" {
+    bucket         = "hotel-terraform-state-CHANGE-ME"
+    key            = "hotel/prod/terraform.tfstate" # separate state key per environment
+    region         = "ap-south-1"
+    dynamodb_table = "hotel-terraform-locks"
+    encrypt        = true
+  }
+}

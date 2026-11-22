@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16
+    container_name: hotel_db
+    environment:
+      # Defaults work out of the box; override with a local, gitignored .env file.
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-app_password}
+      POSTGRES_DB: ${POSTGRES_DB:-appdb}
+    ports:
+      # Bound to localhost only: not reachable from other machines.
+      - "127.0.0.1:5432:5432"
+    volumes:
+      # Named volume: data survives container removal (not `down -v`).
+      - pgdata:/var/lib/postgresql/data
+      # Init scripts run once, in filename order, on first start of an empty volume.
+      - ./db/migrations/001_create_tables.sql:/docker-entrypoint-initdb.d/001_create_tables.sql:ro
+      - ./db/seed/seed.sql:/docker-entrypoint-initdb.d/002_seed.sql:ro
+      - ./db/migrations/002_add_indexes.sql:/docker-entrypoint-initdb.d/003_add_indexes.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
