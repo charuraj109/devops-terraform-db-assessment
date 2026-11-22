@@ -69,7 +69,7 @@ Why:
 - The included columns are not part of the sort key, so the index stays smaller than a 4-column key.
 - Also added `booking_events (booking_id)` for looking up events of a booking.
 
-Reproduce the comparison: `./scripts/explain_before_after.sh`
+Reproduce: `docker compose exec -T db psql -U app -d appdb < db/optimize_query.sql` (runs EXPLAIN ANALYZE on the query). To see the plan without the index, run `DROP INDEX idx_hotel_bookings_city_created_cover;` first and recreate it from `db/migrations/002_add_indexes.sql` afterwards.
 
 | | Plan | Execution time |
 |---|---|---|
